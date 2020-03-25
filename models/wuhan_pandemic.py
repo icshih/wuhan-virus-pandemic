@@ -37,9 +37,17 @@ class WuhanTimeSeries:
     def get_countries(self, country_list):
         temp = self.data_time_series[self.data_time_series["Country/Region"].isin(country_list)]
         if temp is not None:
-            return Countries(self.time_stamp, temp)
+            return Countries(country_list, self.time_stamp, temp)
         else:
             return None
+
+
+def transform(time_series):
+    data_dict = {}
+    for i in range(0, time_series.shape[0], 1):
+        name = "/".join(time_series.iloc[i, 0:2].fillna(""))
+        data_dict[name] = time_series.iloc[i, 4:].to_numpy()
+    return data_dict
 
 
 class Country:
@@ -47,14 +55,7 @@ class Country:
     def __init__(self, country, time_stamp, time_series):
         self.country = country
         self.time_stamp = time_stamp
-        self.t_data = self.transform(time_series)
-
-    def transform(self, time_series):
-        data_dict = {}
-        for i in range(0, time_series.shape[0], 1):
-            name = "/".join(time_series.iloc[i, 0:2].fillna(""))
-            data_dict[name] = time_series.iloc[i, 4:].to_numpy()
-        return data_dict
+        self.t_data = transform(time_series)
 
     def get_provence(self):
         return self.t_data.keys()
@@ -62,8 +63,7 @@ class Country:
     def plot(self, xsize=15, ysize=10):
         fig, ax = plt.subplots(figsize=(xsize, ysize))
         for n, d in self.t_data.items():
-            ax.plot_date(x=self.time_stamp.values, y=d, label=n, marker="o",
-                         ls="-")
+            ax.plot_date(x=self.time_stamp.values, y=d, label=n, marker="o", ls="-")
         ax.set_yscale("log")
         ax.set_ylim(1e0, 1e5)
         ax.set_ylabel("Cases Confirmed")
@@ -83,18 +83,22 @@ class Country:
         ax.xaxis.set_tick_params(rotation=30, labelsize=10)
         ax.legend()
 
+
 class Countries:
 
-    def __init__(self, time_stamp, time_series):
+    def __init__(self, country_list, time_stamp, time_series):
+        self.country_list = country_list
         self.time_stamp = time_stamp
-        self.time_series = time_series
+        self.t_data = transform(time_series)
 
-    def plot(self):
-        fig, axs = plt.subplots(figsize=(10, 10));
-        for i in range(0, self.time_series.shape[0], 1):
-            self.time_series.iloc[i, 4:].plot.line(ax=axs)
-        axs.set_yscale("log")
-        axs.set_ylim(1e0, 1e5)
-        axs.set_ylabel("Cases Confirmed")
-        axs.set_xlabel("Date")
-        plt.plot()
+    def plot(self, xsize=15, ysize=10):
+        fig, ax = plt.subplots(figsize=(xsize, ysize))
+        for c in self.country_list:
+            ax.plot_date(x=self.time_stamp.values, y=self.t_data["/"+c], label=c, marker="o", ls="-")
+        ax.set_yscale("log")
+        ax.set_ylim(1e0, 1e5)
+        ax.set_ylabel("Cases Confirmed")
+        ax.set_xlabel("Date")
+        ax.set_title("Confirmed")
+        ax.xaxis.set_tick_params(rotation=30, labelsize=10)
+        ax.legend()
