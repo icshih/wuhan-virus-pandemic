@@ -1,5 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from pandemic.viz import mplot
+from pandemic.viz import lplot
 import logging
 
 
@@ -56,32 +58,22 @@ class Country:
         self.country = country
         self.time_stamp = time_stamp
         self.t_data = transform(time_series)
+        self.p_engine = "matplotlib"
 
     def get_provence(self):
         return self.t_data.keys()
 
-    def plot(self, xsize=15, ysize=10):
-        fig, ax = plt.subplots(figsize=(xsize, ysize))
-        for n, d in self.t_data.items():
-            ax.plot_date(x=self.time_stamp.values, y=d, label=n, marker="o", ls="-")
-        ax.set_yscale("log")
-        ax.set_ylim(1e0, 1e5)
-        ax.set_ylabel("Cases Confirmed")
-        ax.set_xlabel("Date")
-        ax.set_title("Confirmed")
-        ax.xaxis.set_tick_params(rotation=30, labelsize=10)
-        ax.legend()
+    def plot(self, province="", xsize=15, ysize=10):
+        if self.p_engine == "plotly":
+            lplot.plot_country_state(self.country, self.time_stamp, self.t_data, province)
+        else:
+            mplot.plot_country_state(self.country, self.time_stamp, self.t_data, province, xsize, ysize)
 
-    def plot_state(self, state, xsize=15, ysize=10):
-        data_state = self.t_data[state+"/"+self.country]
-        fig, ax = plt.subplots(figsize=(xsize, ysize))
-        ax.plot_date(x=self.time_stamp.values, y=data_state, label=state + "/" + self.country, marker="o", ls="-")
-        ax.set_yscale("log")
-        ax.set_ylim(1e0, 1e5)
-        ax.set_ylabel("Cases Confirmed")
-        ax.set_xlabel("Date")
-        ax.xaxis.set_tick_params(rotation=30, labelsize=10)
-        ax.legend()
+    def plots(self, xsize=15, ysize=10):
+        if self.p_engine == "plotly":
+            lplot.plots(self.time_stamp, self.t_data)
+        else:
+            mplot.plots(self.time_stamp, self.t_data, xsize, ysize)
 
 
 class Countries:
