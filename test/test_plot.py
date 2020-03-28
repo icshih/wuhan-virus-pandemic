@@ -1,8 +1,6 @@
 import unittest
 
 from pandemic.data.wuhanvirus import WuhanTimeSeries
-from pandemic.viz import lplot
-from pandemic.viz import mplot
 
 
 class MyTestCase(unittest.TestCase):

@@ -24,8 +24,12 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(ts.size, time_series.values.size)
 
     def test_get_country_list(self):
+        test = list()
         countries = self.wts.get_country_list()
-        print(countries.size)
+        for n in countries:
+            test.append({"label": n, "value":n})
+        for t in test:
+            print(t["label"] + " = " + t["value"])
 
     def test_transform(self):
         test = self.wts.get_time_series_of("Afghanistan")

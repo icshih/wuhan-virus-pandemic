@@ -63,15 +63,21 @@ class Country:
     def get_provence(self):
         return self.t_data.keys()
 
+    def get_figure_of(self, province=""):
+        return lplot.plot_country_state(self.country, self.time_stamp, self.t_data, province)
+
+    def get_figure(self):
+        return lplot.plots(self.time_stamp, self.t_data)
+
     def plot(self, province="", xsize=15, ysize=10):
         if self.p_engine == "plotly":
-            lplot.plot_country_state(self.country, self.time_stamp, self.t_data, province)
+            self.get_figure_of(province).show()
         else:
             mplot.plot_country_state(self.country, self.time_stamp, self.t_data, province, xsize, ysize)
 
     def plots(self, xsize=15, ysize=10):
         if self.p_engine == "plotly":
-            lplot.plots(self.time_stamp, self.t_data)
+            self.get_figure().show()
         else:
             mplot.plots(self.time_stamp, self.t_data, xsize, ysize)
 
