@@ -8,7 +8,6 @@ def plot_country_state(country, date, cases, province=""):
     fig.update_traces(mode='lines+markers', showlegend=True)
     fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[date[0], date[-1]])
     fig.update_yaxes(title=dict(text="Number of Confirmed Cases"), type="log", range=[0, 5])
-    fig.update_layout(title=dict(text="Wuhan Virus 武漢肺炎 2020 "))
     return fig
 
 
@@ -19,5 +18,4 @@ def plots(date, cases):
     fig.update_traces(mode='lines+markers', showlegend=True)
     fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[date[0], date[-1]])
     fig.update_yaxes(title=dict(text="Number of Confirmed Cases"), type="log", range=[0, 5])
-    fig.update_layout(title=dict(text="Wuhan Virus 武漢肺炎 2020 "))
     return fig
