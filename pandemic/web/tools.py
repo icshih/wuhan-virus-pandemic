@@ -10,8 +10,15 @@ class Tools:
         dropdown = list()
         countries = self.wvts.get_country_list()
         for n in countries:
-            dropdown.append({"label": n, "value": n})
+            if n.__contains__("*"):
+                label = n.replace("*", "")
+            else:
+                label = n
+            dropdown.append({"label": label, "value": n})
         return dropdown
 
     def select_country(self, country):
         return self.wvts.get_country(country).get_figure()
+
+    def select_countries(self, country_list):
+        return self.wvts.get_countries(country_list).get_figure()

@@ -14,10 +14,15 @@ dropdown = wh.create_country_dropdown()
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # dash-bootstrap-component
-select = dbc.Select(
-    id="select_country",
-    options=dropdown,
-    value="France"
+select_form = dbc.FormGroup(
+    [
+        dbc.Label("Country"),
+        dbc.Select(
+            id="select_country",
+            options=dropdown,
+            value="France"
+)
+    ]
 )
 
 # default dash-core-component
@@ -36,15 +41,10 @@ app.layout = dbc.Container(
 
         dbc.Row(
             [
-                dbc.Label("Country"),
-                dbc.Col(select, md=4),
+                dbc.Col(select_form, md=2),
+                dbc.Col(dcc.Graph(id="plot_country"), md=10),
             ],
-            align="center",
-        ),
-        dbc.Row(
-            [
-                dbc.Col(dcc.Graph(id="plot_country"), md=8)
-            ],
+            align="top",
         ),
     ],
     fluid=True,
