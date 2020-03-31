@@ -1,4 +1,7 @@
 # Wuhan Virus Project
 
-This is a project to follow the evolution of 2019 Novel Coronavirus COVID-19 (2019-nCoV) in the world. The data is from 
-the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE).
+This project is a monitoring application of the Coronavirus (COVID-19) pandemic in the world.
+
+ ![App Example](resources/images/App_Screenshot_2020-03-31.png)
+ 
+The data is from the Johns Hopkins University Center for Systems Science and Engineering (JHU CSSE).

@@ -12,6 +12,12 @@ class MyTestCase(unittest.TestCase):
         test.p_engine = "plotly"
         test.plot()
 
+    def test_lplot_plot_countries(self):
+        countries = ["Afghanistan", "Albania", "Algeria", "Australia"]
+        test = self.wts.get_countries(countries)
+        test.p_engine = "plotly"
+        test.plot()
+
     def test_mplot_plot(self):
         test = self.wts.get_country("Australia")
         test.plot("New South Wales")

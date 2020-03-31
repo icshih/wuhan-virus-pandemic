@@ -88,15 +88,13 @@ class Countries:
         self.country_list = country_list
         self.time_stamp = time_stamp
         self.t_data = transform(time_series)
+        self.p_engine = "matplotlib"
+
+    def get_figure(self):
+        return lplot.plot_countries(self.country_list, self.time_stamp, self.t_data)
 
     def plot(self, xsize=15, ysize=10):
-        fig, ax = plt.subplots(figsize=(xsize, ysize))
-        for c in self.country_list:
-            ax.plot_date(x=self.time_stamp.values, y=self.t_data["/"+c], label=c, marker="o", ls="-")
-        ax.set_yscale("log")
-        ax.set_ylim(1e0, 1e5)
-        ax.set_ylabel("Cases Confirmed")
-        ax.set_xlabel("Date")
-        ax.set_title("Confirmed")
-        ax.xaxis.set_tick_params(rotation=30, labelsize=10)
-        ax.legend()
+        if self.p_engine == "plotly":
+            self.get_figure().show()
+        else:
+            mplot.plot_countries(self.country_list, self.time_stamp, self.t_data, xsize, ysize)
