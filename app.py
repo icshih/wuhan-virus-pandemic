@@ -6,8 +6,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from pandemic.web.tools import Tools
 
-wh = Tools(
-    "/Users/icshih/Programs/projects/WuhanVirus/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv")
+file = "data/time_series_covid19_confirmed_global.csv"
+
+wh = Tools(file)
 dropdown = wh.create_country_dropdown()
 
 # external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css']
