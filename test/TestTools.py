@@ -1,7 +1,7 @@
 import unittest
 
 
-class MyTestCase(unittest.TestCase):
+class TestTools(unittest.TestCase):
     def test_remove_symbol(self):
         taiwan = "Taiwan*"
         self.assertTrue(taiwan.__contains__("*"))

@@ -4,7 +4,7 @@ import pandas as pd
 from pandemic.data.wuhanvirus import WuhanTimeSeries
 
 
-class MyTestCase(unittest.TestCase):
+class TestWuhanPandemic(unittest.TestCase):
 
     path = "resources/time_series_covid19_confirmed_global_unit_test.csv"
     data = pd.read_csv(path)

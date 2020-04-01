@@ -3,8 +3,9 @@ import unittest
 from pandemic.data.wuhanvirus import WuhanTimeSeries
 
 
-class MyTestCase(unittest.TestCase):
+class TestPlot(unittest.TestCase):
     path = "resources/time_series_covid19_confirmed_global_unit_test.csv"
+    #path = "../data/time_series_covid19_confirmed_global.csv"
     wts = WuhanTimeSeries(path)
 
     def test_lplot_plot(self):
