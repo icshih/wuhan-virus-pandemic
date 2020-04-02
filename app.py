@@ -12,7 +12,9 @@ wh = Tools(file)
 dropdown = wh.create_country_dropdown()
 
 # external_stylesheets = ['https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css']
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
+server = app.server
 
 # dash-bootstrap-component
 # select_form = dbc.FormGroup(
