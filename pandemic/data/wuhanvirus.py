@@ -1,100 +1,72 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-from pandemic.viz import mplot
-from pandemic.viz import lplot
-import logging
+from pandemic.web.CountryData import CountryData
 
 
-class WuhanTimeSeries:
+def optimise(path_csv):
+    """
+    Fill the value of Province/State
+    Remove the * symbol after the name of Country/Region
+    :return:
+    """
+    df = pd.read_csv(path_csv)
+    for index, row in df.iterrows():
+        country = row["Country/Region"]
+        if country.__contains__("*"):    # Remove * symbol after country's name
+            country = country.replace("*", "")
+            df.iloc[index, 1] = country
+        if pd.isna(row["Province/State"]):    # if the column is NaN, fill the value of the Country/Region
+            df.iloc[index, 0] = country
+    return df
+
+
+class CSSETimeSeries:
 
     def __init__(self, path_to_time_series):
-        self.data_time_series = pd.read_csv(path_to_time_series)
-        self.time_stamp = self.set_time_stamp()
+        self.ts = optimise(path_to_time_series)
 
-    def set_time_stamp(self):
-        days = self.data_time_series.iloc[0, 4:].size
-        return pd.date_range('1/22/2020', periods=days)
+    def get_country_data(self, country):
+        """
+        Get the CSSE data of the country.
+        The Lat and Long columns are removed and table is pivoted so the data column is the index.
+        :param country:
+        :return: a CountryData object
+        """
+        temp = self.ts[self.ts["Country/Region"] == country]
+        if temp.shape[0] == 0:
+            print(country + " is not in the dataset.")
+            data = None
+        else:
+            data = temp.drop(columns=["Lat", "Long"]).pivot_table(columns="Province/State")
+            data.index = pd.to_datetime(data.index)
+        return CountryData(data.sort_index())
+
+    def select(self, country_list):
+        """
+        Select the CSSE data from a list of countries.
+        :param country_list:
+        :return: a directory of CountryData objects
+        """
+        countries = dict()
+        for c in country_list:
+            tmp = self.get_country_data(c)
+            if tmp is not None:
+                countries[c] = tmp
+        return countries
+
+    def merge(self, country_list):
+        """
+        Merge the CountryData from a list of countries
+        Only the columns whose name of Province/State equals to that of the country are merged.
+        :param country_list:
+        :return: a CountryData object
+        """
+        countries = self.select(country_list)
+        data = list()
+        for k in countries.keys():
+            data.append(countries.get(k).df[k])
+        return CountryData(pd.concat(data, axis=1))
 
     def get_country_list(self):
-        return self.data_time_series["Country/Region"].unique()
-
-    def get_time_series_all(self):
-        return self.data_time_series
-
-    def get_time_series_of(self, country):
-        temp = self.data_time_series[self.data_time_series["Country/Region"] == country]
-        if temp.shape[0] != 0:
-            return temp
-        else:
-            logging.error("No data for " + country)
-            return None
-
-    def get_country(self, country):
-        temp = self.get_time_series_of(country)
-        if temp is not None:
-            return Country(country, self.time_stamp, temp)
-        else:
-            return None
-
-    def get_countries(self, country_list):
-        temp = self.data_time_series[self.data_time_series["Country/Region"].isin(country_list)]
-        if temp is not None:
-            return Countries(country_list, self.time_stamp, temp)
-        else:
-            return None
+        return self.ts["Country/Region"].unique()
 
 
-def transform(time_series):
-    data_dict = {}
-    for i in range(0, time_series.shape[0], 1):
-        name = "/".join(time_series.iloc[i, 0:2].fillna(""))
-        data_dict[name] = time_series.iloc[i, 4:].to_numpy()
-    return data_dict
-
-
-class Country:
-
-    def __init__(self, country, time_stamp, time_series):
-        self.country = country
-        self.time_stamp = time_stamp
-        self.t_data = transform(time_series)
-        self.p_engine = "matplotlib"
-
-    def get_provence(self):
-        return self.t_data.keys()
-
-    def get_figure_of(self, province=""):
-        return lplot.plot_country_state(self.country, self.time_stamp, self.t_data, province)
-
-    def get_figure(self):
-        return lplot.plots(self.time_stamp, self.t_data)
-
-    def plot(self, province="", xsize=15, ysize=10):
-        if self.p_engine == "plotly":
-            self.get_figure_of(province).show()
-        else:
-            mplot.plot_country_state(self.country, self.time_stamp, self.t_data, province, xsize, ysize)
-
-    def plots(self, xsize=15, ysize=10):
-        if self.p_engine == "plotly":
-            self.get_figure().show()
-        else:
-            mplot.plots(self.time_stamp, self.t_data, xsize, ysize)
-
-
-class Countries:
-
-    def __init__(self, country_list, time_stamp, time_series):
-        self.country_list = country_list
-        self.time_stamp = time_stamp
-        self.t_data = transform(time_series)
-        self.p_engine = "matplotlib"
-
-    def get_figure(self):
-        return lplot.plot_countries(self.country_list, self.time_stamp, self.t_data)
-
-    def plot(self, xsize=15, ysize=10):
-        if self.p_engine == "plotly":
-            self.get_figure().show()
-        else:
-            mplot.plot_countries(self.country_list, self.time_stamp, self.t_data, xsize, ysize)
