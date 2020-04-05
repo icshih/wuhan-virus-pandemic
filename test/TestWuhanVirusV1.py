@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 
-from pandemic.data.wuhanvirus import WuhanTimeSeries
+from pandemic.data.wuhanvirus_v1 import WuhanTimeSeries
 
 
 class TestWuhanPandemic(unittest.TestCase):
