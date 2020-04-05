@@ -53,3 +53,45 @@ def plots(date, cases):
                       plot_bgcolor="WhiteSmoke",
                       paper_bgcolor="LightSteelBlue", )
     return fig
+
+
+def plot2_countries(country_data_list):
+    fig = go.Figure()
+    for c, d in country_data_list.items():
+        fig.add_trace(go.Scatter(x=d.df.index, y=d.df[c], marker=dict(symbol="circle"), name=c))
+    fig.update_traces(mode='lines+markers', showlegend=True, line=dict(shape="spline", smoothing=0.2))
+    fig.update_xaxes(title=dict(text="Date"), type="date")
+    fig.update_yaxes(title=dict(text="Number of Confirmed Cases"), type="log", range=[0, 5])
+    fig.update_layout(width=1000,
+                      height=600,
+                      margin=dict(l=20, r=20, t=50, b=20),
+                      plot_bgcolor="WhiteSmoke",
+                      paper_bgcolor="LightSteelBlue",)
+
+
+def plot_figure_of(df, province):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df.index, y=df[province], marker=dict(symbol="circle"), name=province))
+    fig.update_traces(mode='lines+markers', showlegend=True, line=dict(shape="spline", smoothing=0.2))
+    fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[df.index[0], df.index[-1]])
+    fig.update_yaxes(title=dict(text="Number of Confirmed Cases"), type="log", range=[0, 5])
+    fig.update_layout(width=1000, height=600,
+            margin=dict(l=20, r=20, t=50, b=20),
+            plot_bgcolor="WhiteSmoke",
+            paper_bgcolor="LightSteelBlue",)
+    return fig
+
+
+def plot_all_figures(df):
+    fig = go.Figure()
+    for c in df.columns:
+        fig.add_trace(go.Scatter(x=df.index, y=df[c], marker=dict(symbol="circle"), name=c))
+    fig.update_traces(mode='lines+markers', showlegend=True, line=dict(shape="spline", smoothing=0.2))
+    fig.update_xaxes(title=dict(text="Date"), type="date")
+    fig.update_yaxes(title=dict(text="Number of Confirmed Cases"), type="log", range=[0, 5])
+    fig.update_layout(width=1000,
+                      height=600,
+                      margin=dict(l=20, r=20, t=50, b=20),
+                      plot_bgcolor="WhiteSmoke",
+                      paper_bgcolor="LightSteelBlue",)
+    return fig
