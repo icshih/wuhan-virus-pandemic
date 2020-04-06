@@ -1,6 +1,7 @@
 import logging
 
 import plotly.graph_objects as go
+import numpy as np
 
 logger = logging.getLogger("lplot")
 
@@ -67,6 +68,24 @@ def plot2_countries(country_data_list):
                       margin=dict(l=20, r=20, t=50, b=20),
                       plot_bgcolor="WhiteSmoke",
                       paper_bgcolor="LightSteelBlue",)
+
+
+def plot_figure_country_region(df):
+    rangeUpper = 5.0
+    max_scale = np.log10(df.iloc[-1,].max())
+    if max_scale > rangeUpper:
+        rangeUpper = max_scale
+    fig = go.Figure()
+    for c in df.columns:
+        fig.add_trace(go.Scatter(x=df.index, y=df[c], line=dict(width=4), name=c))
+    fig.update_traces(mode='lines', showlegend=True, line=dict(shape="spline", smoothing=0.5))
+    fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[df.index[0], df.index[-1]])
+    fig.update_yaxes(title=dict(text="Number of Confirmed Cases"), type="log", range=[0.0, rangeUpper])
+    fig.update_layout(width=1000, height=600,
+                      margin=dict(l=20, r=20, t=50, b=20),
+                      plot_bgcolor="WhiteSmoke",
+                      paper_bgcolor="LightSteelBlue", )
+    return fig
 
 
 def plot_figure_of(df, province):
