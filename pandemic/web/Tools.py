@@ -17,4 +17,5 @@ class Tools:
         return self.select_countries(list(country))
 
     def select_countries(self, country_list):
-        return self.df.merge(country_list).get_all_figures()
+        return self.df.get_grouped_country_data().get_figure_country_region(country_list)
+        # return self.df.merge(country_list).get_all_figures()
