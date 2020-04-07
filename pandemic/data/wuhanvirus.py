@@ -40,6 +40,17 @@ class CSSETimeSeries:
             data.index = pd.to_datetime(data.index)
         return CountryData(data.sort_index())
 
+    def get_grouped_country_data(self):
+        """
+        Some countries report the COVID-19 cases at level of province/state,
+        this method regroups the data to produce the total cases at country's level
+        :return: a CountryData object
+        """
+        df = self.ts.drop(columns=["Lat", "Long"]).groupby("Country/Region").sum().pivot_table(
+            columns="Country/Region")
+        df.index = pd.to_datetime(df.index)
+        return CountryData(df.sort_index())
+
     def select(self, country_list):
         """
         Select the CSSE data from a list of countries.
