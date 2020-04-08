@@ -88,6 +88,39 @@ def plot_figure_country_region(df):
     return fig
 
 
+def plot_confirmed_death_recovered_by(df):
+    rangeUpper = 5.0
+    max_scale = np.log10(df["Confirmed"][-1])
+    if max_scale > rangeUpper:
+        rangeUpper = max_scale
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=df.index, y=df["Confirmed"],line=dict(width=4), name="Confirmed", fill="tonexty", mode="none"))
+    fig.add_trace(go.Scatter(x=df.index, y=df["Death"],line=dict(width=4), name="Deaths", fill="tozeroy", mode="none"))
+    fig.add_trace(go.Scatter(x=df.index, y=df["Recovered"],line=dict(width=4), name="Recovered", fill="tozeroy", mode="none"))
+    fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[df.index[0], df.index[-1]])
+    fig.update_yaxes(title=dict(text="Number of Cases"), type="log", range=[0.0, rangeUpper])
+    fig.update_layout(width=1000, height=600,
+                      margin=dict(l=20, r=20, t=50, b=20),
+                      plot_bgcolor="WhiteSmoke",
+                      paper_bgcolor="LightSteelBlue", )
+    return fig
+
+
+def plot_figure_country_case_daily(df):
+    fig = go.Figure()
+    if df.columns.size == 1:
+        country = df.columns[0]
+        new_cases = df[country].iloc[1:].values - df[country].iloc[:-1].values
+        fig.add_trace(go.Bar(x=df.index, y=new_cases, name=country))
+        fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[df.index[0], df.index[-1]])
+        fig.update_yaxes(title=dict(text="Number of New Cases"))
+        fig.update_layout(width=1000, height=600,
+                      margin=dict(l=20, r=20, t=50, b=20),
+                      plot_bgcolor="WhiteSmoke",
+                      paper_bgcolor="LightSteelBlue", )
+    return fig
+
+
 def plot_figure_of(df, province):
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df.index, y=df[province], marker=dict(symbol="circle"), name=province))
