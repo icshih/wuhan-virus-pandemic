@@ -6,9 +6,11 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 from pandemic.web.Tools import Tools
 
-file = "data/time_series_covid19_confirmed_global.csv"
+global_confirmed = "data/time_series_covid19_confirmed_global.csv"
+global_deaths = "data/time_series_covid19_deaths_global.csv"
+global_recovered = "data/time_series_covid19_recovered_global.csv"
 
-wh = Tools(file)
+wh = Tools(global_confirmed, global_deaths, global_recovered)
 dropdown = wh.create_country_dropdown()
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
