@@ -16,4 +16,4 @@ This personal project visualises the daily evolution of Coronavirus COVID-19 pan
  
  ---
 
-[I-Chun SHIH](www.linkedin.com/in/icshih)@2020
+[I-Chun SHIH](http://www.linkedin.com/in/icshih)@2020
