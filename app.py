@@ -13,7 +13,7 @@ global_recovered = "data/time_series_covid19_recovered_global.csv"
 wh = Tools(global_confirmed, global_deaths, global_recovered)
 dropdown = wh.create_country_dropdown()
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO])
 
 server = app.server
 
@@ -36,12 +36,30 @@ multi_select_form = dbc.FormGroup(
 #     multi=True
 # )
 
+markdown_text = '''
+The daily evolution of COVID-19 pandemic country by country since 22 January 2020.
+'''
+
+markdown_info = '''
+**Declaim**: The time series data is retrieved daily from data repository for the 
+[2019 Novel Coronavirus Visual Dashboard](https://github.com/CSSEGISandData/COVID-19) 
+operated by the Johns Hopkins University Center for Systems Science and Engineering ([JHU CSSE](https://systems.jhu.edu)).
+This website is strictly for personal learning purpose; the information presented here IS NOT for any medical
+or policy guidance. Viewers SHALL consult the precise epidemic data from the official sources of each country.
+'''
+
+markdown_credit = '''
+Page created by [I-Chun Shih](http://www.linkedin.com/in/icshih)@2020
+'''
+
 app.layout = dbc.Container(
     [
         html.H1("Coronavirus COVID-19 (a.k.a. Wuhan Virus)"),
-        html.P("This simple application follows the daily progress of the virus in each country. "
-               "The data is collected and organised by the Johns Hopkins University Center for "
-               "Systems Science and Engineering (JHU CSSE)."),
+        html.H2("嚴重特殊傳染性肺炎 COVID-19 (武漢肺炎)"),
+        html.Div(
+            [
+                dcc.Markdown(children=markdown_text)
+            ]),
 
 
         html.Hr(),
@@ -51,6 +69,20 @@ app.layout = dbc.Container(
               dbc.Col(multi_select_form, md=2),
               dbc.Col(dcc.Graph(id="plot_countries"), md=10),
           ]
+        ),
+
+        html.Hr(),
+        html.Div(
+            [
+                dcc.Markdown(children=markdown_info)
+            ]
+        ),
+
+        html.Hr(),
+        html.Div(
+            [
+                dcc.Markdown(children=markdown_credit)
+            ]
         ),
     ],
     fluid=True,
