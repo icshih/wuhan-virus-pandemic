@@ -5,10 +5,17 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from pandemic.web.Tools import Tools
+import ssl
 
-global_confirmed = "data/time_series_covid19_confirmed_global.csv"
-global_deaths = "data/time_series_covid19_deaths_global.csv"
-global_recovered = "data/time_series_covid19_recovered_global.csv"
+ssl._create_default_https_context = ssl._create_unverified_context
+
+#global_confirmed = "data/time_series_covid19_confirmed_global.csv"
+#global_deaths = "data/time_series_covid19_deaths_global.csv"
+#global_recovered = "data/time_series_covid19_recovered_global.csv"
+
+global_confirmed = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv"
+global_deaths = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
+global_recovered = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
 
 wh = Tools(global_confirmed, global_deaths, global_recovered)
 dropdown = wh.create_country_dropdown()
