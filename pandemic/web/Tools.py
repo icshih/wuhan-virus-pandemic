@@ -1,5 +1,5 @@
 from pandemic.data.WuhanVirus import CSSETimeSeries as cts
-from pandemic.viz.lplot import plot_confirmed_death_recovered_by
+from pandemic.viz.lplot import plot_confirmed_death_recovered_by, plot_confirmed_infection_rate
 import pandas as pd
 
 
@@ -25,6 +25,14 @@ class Tools:
         df.columns = ["Confirmed", "Death", "Recovered"]
         return plot_confirmed_death_recovered_by(df)
 
+    def _show_confirmed_death_recovered_infection_rate(self, country, date=None, period=7):
+        df = pd.concat([self.confirmed.df[country], self.death.df[country], self.recovered.df[country]], axis=1)
+        df.columns = ["Confirmed", "Death", "Recovered"]
+        if date is not None:
+            return plot_confirmed_infection_rate(df, date, period=period)
+        else:
+            return plot_confirmed_death_recovered_by(df)
+
     def create_country_dropdown(self):
         """
         Create Country dropdown manu.
@@ -39,15 +47,17 @@ class Tools:
     def select_country(self, country):
         return self.select_countries(list(country))
 
-    def select_countries(self, country_list):
+    def select_countries(self, country_list, date=None):
         """
         Display COVID-19 epidemics in the selected country.
         :param country_list: One or more countries. If the list length is 1, full COVID-19 data is plotted,
                              otherwise, the confirmed cases of the selected countries are plotted.
+        :param date: (Optional) Examination of the infection rate in the duration of 7 days (default value)
+                     up to the date.
         :return:
         """
         if len(country_list) == 1:
-            return self._show_confirmed_death_recovered(country_list[0])
+            return self._show_confirmed_death_recovered_infection_rate(country_list[0], date=date)
         else:
             return self._show_confirmed_only(country_list)
 
