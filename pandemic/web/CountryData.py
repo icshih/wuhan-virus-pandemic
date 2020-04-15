@@ -1,4 +1,7 @@
 from pandemic.viz.lplot import plot_figure_of, plot_all_figures, plot_figure_country_region
+import pandas as pd
+import numpy as np
+from scipy.optimize import curve_fit
 
 
 class CountryData:
