@@ -18,89 +18,105 @@ wh = Tools(global_confirmed, global_deaths, global_recovered)
 dropdown = wh.create_country_dropdown()
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO])
-
+app.config.suppress_callback_exceptions = True
+app.title = "COVID-19 Pandemic"
 server = app.server
 
-multi_select_form = dbc.FormGroup(
-    [
-        dbc.Label("Select Countries:"),
-        dcc.Dropdown(
-            id="select_countries",
-            options=dropdown,
-            value=["Taiwan", "France"],
-            multi=True)
-    ]
-)
+config = {'modeBarButtonsToRemove': ['hoverClosestCartesian',
+                                     'zoom2d', 'hoverCompareCartesian', 'zoomInGeo', 'zoomOutGeo',
+                                     'hoverClosestGeo', 'hoverClosestGl2d', 'toggleHover',
+                                     'zoomInMapbox', 'zoomOutMapbox', 'toggleSpikelines'],
+          'displaylogo': False}
 
-markdown_text = '''
+markdown_title_info = '''
 # 嚴重特殊傳染性肺炎 (武漢肺炎) Coronavirus COVID-19
 
 The daily evolution of COVID-19 pandemic country by country since 22 January 2020.
 '''
 
-markdown_info = '''
+markdown_declaim_author = '''
 **Declaim**: The time series data is retrieved daily from data repository for the 
 [2019 Novel Coronavirus Visual Dashboard](https://github.com/CSSEGISandData/COVID-19) 
 operated by the Johns Hopkins University Center for Systems Science and Engineering ([JHU CSSE](https://systems.jhu.edu)).
 This website is strictly for personal learning purpose; the information presented here IS NOT for any medical
 or policy guidance. Viewers SHALL consult the precise epidemic data from the official sources of each country.
-'''
 
-markdown_credit = '''
+---
+
 Page created by [I-Chun Shih](http://www.linkedin.com/in/icshih)@2020
+
 '''
 
-app.layout = dbc.Container(
+title_info = dbc.Container(
     [
-        html.Title("COVID-19 In The World"),
-        # html.H1("Coronavirus COVID-19 (a.k.a. Wuhan Virus)"),
-        # html.H2("嚴重特殊傳染性肺炎 COVID-19 (武漢肺炎)"),
-        dbc.Row(
-            html.Div(
-                [
-                    dcc.Markdown(children=markdown_text)
-                ],
-                className="mx-auto",
-            ),
-            align="cneter",
-            justify="center",
-        ),
-
-        html.Hr(),
-
         dbc.Row(
             [
-                dbc.Col(multi_select_form, md=2),
-                dbc.Col(dcc.Graph(id="plot_countries_infection_rate"), md=10),
+                dbc.Col(
+                    [
+                        dcc.Markdown(children=markdown_title_info),
+                    ]
+                )
             ],
-            align="cneter",
-            justify="center",
-        ),
-
-        html.Hr(),
-
-        dbc.Row(
-            html.Div(
-                [
-                    dbc.Col(dcc.Markdown(children=markdown_info)),
-                ],
-                className="mx-auto",
-            ),
-        ),
-
-        html.Hr(),
-
-        dbc.Row(
-            html.Div(
-                [
-                    dbc.Col(dcc.Markdown(children=markdown_credit)),
-                ],
-            ),
+            className="mt-3 mb-5 ml-5"
         ),
     ],
-
+    id="title_info",
     fluid=True,
 )
+
+country_evolution = dbc.Container(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        dcc.Dropdown(id="select_countries", options=dropdown, value=["Taiwan", "France"],
+                                     placeholder="Select Countries", multi=True, className="mb-2")
+                    ],
+                    className="col-2",
+                ),
+                dbc.Col(
+                    [
+                        html.Div(
+                            dcc.Graph(id="plot_countries_infection_rate", config=config, className="mb-10")
+                        ),
+                    ],
+                    className="col-10",
+                ),
+            ],
+            className="mb-5 ml-5"
+        ),
+    ],
+    id="country_view",
+    fluid=True,
+)
+
+declaim_author = dbc.Container(
+    [
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.Div(
+                            [
+                                dcc.Markdown(children=markdown_declaim_author),
+                            ]
+                        )
+                    ]
+                )
+            ],
+            className="mb-5 ml-5"
+        ),
+    ],
+    id="declaim_author_view",
+    fluid=True,
+)
+
+app.layout = html.Div([
+    title_info,
+    country_evolution,
+    declaim_author
+])
 
 
 @app.callback(
