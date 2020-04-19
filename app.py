@@ -28,12 +28,6 @@ config = {'modeBarButtonsToRemove': ['hoverClosestCartesian',
                                      'zoomInMapbox', 'zoomOutMapbox', 'toggleSpikelines'],
           'displaylogo': False}
 
-markdown_title_info = '''
-# 嚴重特殊傳染性肺炎 (武漢肺炎) Coronavirus COVID-19
-
-The daily evolution of COVID-19 pandemic country by country since 22 January 2020.
-'''
-
 markdown_declaim_author = '''
 **Declaim**: The time series data is retrieved daily from data repository for the 
 [2019 Novel Coronavirus Visual Dashboard](https://github.com/CSSEGISandData/COVID-19) 
@@ -53,15 +47,25 @@ title_info = dbc.Container(
             [
                 dbc.Col(
                     [
-                        dcc.Markdown(children=markdown_title_info),
+                        html.H1("Coronavirus COVID-19 Pandemic", className="p-4 bg-primary text-white"),
+                    ]),
+                dbc.Col(
+                    [
+                        html.H1("嚴重特殊傳染性肺炎 (武漢肺炎)", className="p-4 bg-primary text-white text-right"),
+                    ], width="auto"),
+            ], className="mt-3 mb-5 mx-5", no_gutters=True,
+        ),
+        dbc.Row(
+            [
+                dbc.Col(
+                    [
+                        html.P("Following the daily evolution of the pandemic country by country since 22 January 2020.",
+                               className="lead", style={"font-size": "200%"}),
                     ]
                 )
-            ],
-            className="mt-3 mb-5 ml-5"
+            ], className="mt-3 mb-5 mx-5",
         ),
-    ],
-    id="title_info",
-    fluid=True,
+    ], id="title_info", fluid=True,
 )
 
 country_evolution = dbc.Container(
@@ -71,24 +75,18 @@ country_evolution = dbc.Container(
                 dbc.Col(
                     [
                         dcc.Dropdown(id="select_countries", options=dropdown, value=["Taiwan", "France"],
-                                     placeholder="Select Countries", multi=True, className="mb-2")
-                    ],
-                    className="col-2",
+                                     placeholder="Select Countries", multi=True, className="my-2")
+                    ], className="col-2",
                 ),
                 dbc.Col(
                     [
-                        html.Div(
-                            dcc.Graph(id="plot_countries_infection_rate", config=config, className="mb-10")
-                        ),
-                    ],
-                    className="col-10",
+                        dcc.Graph(id="plot_countries_infection_rate", config=config, className="ml-2 my-2")
+
+                    ], className="col-10",
                 ),
-            ],
-            className="mb-5 ml-5"
+            ], className="mb-5 mx-5"
         ),
-    ],
-    id="country_view",
-    fluid=True,
+    ], id="country_view", fluid=True,
 )
 
 declaim_author = dbc.Container(
@@ -97,19 +95,12 @@ declaim_author = dbc.Container(
             [
                 dbc.Col(
                     [
-                        html.Div(
-                            [
-                                dcc.Markdown(children=markdown_declaim_author),
-                            ]
-                        )
+                        dcc.Markdown(children=markdown_declaim_author, style={"font-size": "140%"}),
                     ]
                 )
-            ],
-            className="mb-5 ml-5"
+            ], className="mb-5 mx-5"
         ),
-    ],
-    id="declaim_author_view",
-    fluid=True,
+    ], id="declaim_author_view", fluid=True,
 )
 
 app.layout = html.Div([

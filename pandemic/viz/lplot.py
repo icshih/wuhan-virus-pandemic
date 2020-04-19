@@ -90,9 +90,9 @@ def plot_figure_country_region(df):
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
                      ticks="inside")
     fig.update_yaxes(visible=True, title=dict(text="Number of Confirmed Cases", font=dict(size=16)),
-                     type="log", range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
+                     type="log", autorange=True, range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
                      ticks="inside", tickson="labels")
-    fig.update_layout(width=1000, height=600,
+    fig.update_layout(
                       showlegend=True, legend=dict(font=dict(size=14)),
                       margin=dict(l=20, r=20, t=50, b=50),
                       plot_bgcolor="white",
@@ -117,10 +117,10 @@ def plot_confirmed_death_recovered_by(df):
     fig.update_xaxes(title=dict(text="Date", font=dict(size=16)),
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
                      ticks="inside")
-    fig.update_yaxes(visible=True, title=dict(text="Number of Confirmed Cases", font=dict(size=16)),
+    fig.update_yaxes(visible=True, title=dict(text="Number of Cases", font=dict(size=16)),
                      type="log", range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
                      ticks="inside", tickson="labels")
-    fig.update_layout(width=1000, height=600,
+    fig.update_layout(
                       showlegend=True, legend=dict(font=dict(size=14)),
                       margin=dict(l=20, r=20, t=50, b=50),
                       plot_bgcolor="white",
@@ -168,10 +168,10 @@ def plot_confirmed_infection_rate(df, date, period=7):
     fig.update_xaxes(title=dict(text="Date", font=dict(size=16)),
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
                      ticks="inside")
-    fig.update_yaxes(visible=True, title=dict(text="Number of Confirmed Cases", font=dict(size=16)),
+    fig.update_yaxes(visible=True, title=dict(text="Number of Cases", font=dict(size=16)),
                      type="log", range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
                      ticks="inside", tickson="labels")
-    fig.update_layout(width=1000, height=600,
+    fig.update_layout(
                       showlegend=True, legend=dict(font=dict(size=14)),
                       margin=dict(l=20, r=20, t=50, b=50),
                       plot_bgcolor="white",
