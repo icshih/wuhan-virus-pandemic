@@ -128,42 +128,51 @@ def plot_confirmed_death_recovered_by(df):
     return fig
 
 
-def plot_confirmed_infection_rate(df, date, period=7):
+def plot_confirmed_infection_rate(df, date=None, period=7):
     """
     Used by Tools
     :param df:
-    :param date:
+    :param date: None or Date type
     :param period:
     :return:
     """
-    confirmed = df["Confirmed"]
-    x_date, popt, pcov = fit(confirmed, date, period)
-    #cf = confirmed.df
-    # Create predicted data
-    cf_pred = confirmed[x_date[0]:confirmed.index[-1]]
-    y_pred_model = 10**func(range(len(cf_pred)), *popt)
-    cf_model = pd.Series(y_pred_model, index=cf_pred.index)
-    # On_Date
-    on_date = cf_model.iloc[0:period+1]
-    # Off_Date
-    off_date = cf_model.iloc[period:]
     # Adjust maximum value at y-axis
     rangeUpper = 5.0
-    max_scale = np.log10(confirmed[-1])
+    max_scale = np.log10(df["Confirmed"][-1])
     if max_scale > rangeUpper:
         rangeUpper = max_scale
     fig = go.Figure()
 
     fig.add_trace(
-        go.Scatter(x=df.index, y=confirmed, name="Confirmed", line=dict(width=4), fill="tonexty", mode="none"))
+        go.Scatter(x=df.index, y=df["Confirmed"], name="Confirmed",
+                   line=dict(width=4), fill="tonexty", mode="none"))
     fig.add_trace(
-        go.Scatter(x=df.index, y=df["Death"], name="Deaths", line=dict(width=4), fill="tozeroy", mode="none"))
+        go.Scatter(x=df.index, y=df["Death"], name="Deaths",
+                   line=dict(width=4), fill="tozeroy", mode="none"))
     fig.add_trace(
-        go.Scatter(x=df.index, y=df["Recovered"], name="Recovered", line=dict(width=4), fill="tozeroy", mode="none"))
-    fig.add_trace(
-        go.Scatter(x=on_date.index, y=on_date, mode='lines', name="Fitted", line=dict(color='firebrick', width=2)))
-    fig.add_trace(
-        go.Scatter(x=off_date.index, y=off_date, mode='lines', name="Projected", line=dict(color='firebrick', width=2, dash='dot')))
+        go.Scatter(x=df.index, y=df["Recovered"], name="Recovered",
+                   line=dict(width=4), fill="tozeroy", mode="none"))
+
+    if date is not None:
+        confirmed = df["Confirmed"]
+        x_date, popt, pcov = fit(confirmed, date, period)
+        infect_rate = "20% new cases in <i>" + str(round(0.2 / popt[1])) + "</i> days*"
+        # Create predicted data
+        cf_pred = confirmed[x_date[0]:confirmed.index[-1]]
+        y_pred_model = 10**func(range(len(cf_pred)), *popt)
+        cf_model = pd.Series(y_pred_model, index=cf_pred.index)
+        # On_Date
+        on_date = cf_model.iloc[0:period+1]
+        # Off_Date
+        off_date = cf_model.iloc[period:]
+        fig.add_trace(
+            go.Scatter(x=on_date.index, y=on_date, mode='lines', name="Fitted",
+                       line=dict(color='firebrick', width=4),
+                       showlegend=False, hovertemplate="%{x}<br>" + infect_rate, hoverinfo="x+text"))
+        fig.add_trace(
+            go.Scatter(x=off_date.index, y=off_date, mode='lines', name="Projected",
+                       line=dict(color='firebrick', width=4, dash='dot'),
+                       showlegend=False, hovertemplate="%{x}<br>Projected Cases: %{y:.1f}", hoverinfo="x+text"))
 
     fig.update_xaxes(title=dict(text="Date", font=dict(size=16)),
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
