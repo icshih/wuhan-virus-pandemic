@@ -84,7 +84,8 @@ def plot_figure_country_region(df):
         rangeUpper = max_scale
     fig = go.Figure()
     for c in df.columns:
-        fig.add_trace(go.Scatter(x=df.index, y=df[c], name=c, line=dict(width=4)))
+        fig.add_trace(go.Scatter(x=df.index, y=df[c], name=c,
+                                 line=dict(width=4), hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
     fig.update_traces(mode='lines', line=dict(shape="spline", smoothing=0.5))
     fig.update_xaxes(title=dict(text="Date", font=dict(size=16)),
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
@@ -101,11 +102,6 @@ def plot_figure_country_region(df):
 
 
 def plot_confirmed_death_recovered_by(df):
-    """
-    Used by Tools
-    :param df:
-    :return:
-    """
     rangeUpper = 5.0
     max_scale = np.log10(df["Confirmed"][-1])
     if max_scale > rangeUpper:
@@ -145,13 +141,16 @@ def plot_confirmed_infection_rate(df, date=None, period=7):
 
     fig.add_trace(
         go.Scatter(x=df.index, y=df["Confirmed"], name="Confirmed",
-                   line=dict(width=4), fill="tonexty", mode="none"))
+                   line=dict(width=4), fill="tonexty", mode="none",
+                   hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
     fig.add_trace(
         go.Scatter(x=df.index, y=df["Death"], name="Deaths",
-                   line=dict(width=4), fill="tozeroy", mode="none"))
+                   line=dict(width=4), fill="tozeroy", mode="none",
+                   hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
     fig.add_trace(
         go.Scatter(x=df.index, y=df["Recovered"], name="Recovered",
-                   line=dict(width=4), fill="tozeroy", mode="none"))
+                   line=dict(width=4), fill="tozeroy", mode="none",
+                   hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
 
     if date is not None:
         confirmed = df["Confirmed"]
@@ -172,7 +171,7 @@ def plot_confirmed_infection_rate(df, date=None, period=7):
         fig.add_trace(
             go.Scatter(x=off_date.index, y=off_date, mode='lines', name="Projected",
                        line=dict(color='firebrick', width=4, dash='dot'),
-                       showlegend=False, hovertemplate="%{x}<br>Projected Cases: %{y:.1f}", hoverinfo="x+text"))
+                       showlegend=False, hovertemplate="%{x}<br>Projected Cases: %{y:.0f}", hoverinfo="x+text"))
 
     fig.update_xaxes(title=dict(text="Date", font=dict(size=16)),
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
