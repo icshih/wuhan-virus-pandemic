@@ -8,16 +8,17 @@ This personal project visualises the daily evolution of Coronavirus COVID-19 pan
 
 Git repository: [wuhan-virus-pandemic](https://github.com/icshih/wuhan-virus-pandemic)
 
-Web application: [https://covid-19-pandemic.herokuapp.com](https://covid-19-pandemic.herokuapp.com)
+Web application: [https://covid-19-pandamic.herokuapp.com](https://covid-19-pandamic.herokuapp.com)
 
  
 ## Data Source
 - Johns Hopkins University Center for Systems Science and Engineering [https://github.com/CSSEGISandData/COVID-19](https://github.com/CSSEGISandData/COVID-19).
 
-## Tech Stack
+## Dependencies
 - Python 3
 - Pandas
 - Numpy
+- Scipy
 - Plotly
 - Dash
  
