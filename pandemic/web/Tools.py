@@ -28,10 +28,10 @@ class Tools:
     def _show_confirmed_death_recovered_infection_rate(self, country, date=None, period=7):
         df = pd.concat([self.confirmed.df[country], self.death.df[country], self.recovered.df[country]], axis=1)
         df.columns = ["Confirmed", "Death", "Recovered"]
-        if date is not None:
-            return plot_confirmed_infection_rate(df, date, period=period)
-        else:
-            return plot_confirmed_death_recovered_by(df)
+        # if date is not None:
+        #     return plot_confirmed_infection_rate(df, date, period=period)
+        # else:
+        return plot_confirmed_infection_rate(df, date, period)
 
     def create_country_dropdown(self):
         """
