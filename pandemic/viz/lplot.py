@@ -108,10 +108,10 @@ def plot_figure_confirmed_100_plus(df):
     :param df: The DataFrome with countries as columns.
     :return:
     """
-    rangeUpper = 5.0
+    range_upper = 5.0
     max_scale = np.log10(df.iloc[-1, ].max())
-    if max_scale > rangeUpper:
-        rangeUpper = max_scale
+    if max_scale > range_upper:
+        range_upper = max_scale
     fig = go.Figure()
     for c in df.columns:
         cty = df[c]
@@ -124,7 +124,7 @@ def plot_figure_confirmed_100_plus(df):
                      autorange=False, range=[0, 100],
                      ticks="inside")
     fig.update_yaxes(visible=True, title=dict(text="Number of Confirmed Cases", font=dict(size=16)),
-                     type="log", autorange=True, range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
+                     type="log", autorange=True, range=[0.0, range_upper], showgrid=True, gridcolor="#eee",
                      ticks="inside", tickson="labels")
     fig.update_layout(
         showlegend=True, legend=dict(font=dict(size=14)),
