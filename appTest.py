@@ -59,8 +59,9 @@ title_info = dbc.Container(
             [
                 dbc.Col(
                     [
-                        html.P("Following the daily evolution of the pandemic country by country since 22 January 2020.",
-                               className="lead", style={"font-size": "200%"}),
+                        html.P(
+                            "Following the daily evolution of the pandemic country by country.",
+                            className="lead", style={"font-size": "200%"}),
                     ]
                 )
             ], className="mt-3 mb-5 mx-5",
@@ -68,19 +69,19 @@ title_info = dbc.Container(
     ], id="title_info", fluid=True,
 )
 
-country_evolution = dbc.Container(
+country_evolution2 = dbc.Container(
     [
         dbc.Row(
             [
                 dbc.Col(
                     [
-                        dcc.Dropdown(id="select_countries", options=dropdown, value=["Taiwan", "France"],
+                        dcc.Dropdown(id="select_countries-2", options=dropdown, value=["Taiwan", "France"],
                                      placeholder="Select Countries", multi=True, className="my-2")
                     ], className="col-2",
                 ),
                 dbc.Col(
                     [
-                        dcc.Graph(id="plot_countries_infection_rate", config=config, className="ml-2 my-2")
+                        dcc.Graph(id="plot_countries_infection_rate-2", config=config, className="ml-2 my-2")
 
                     ], className="col-10",
                 ),
@@ -88,6 +89,51 @@ country_evolution = dbc.Container(
         ),
     ], id="country_view", fluid=True,
 )
+
+country_evolution = dbc.Container([
+    dbc.Row([
+        dbc.Col([
+            dbc.Card([
+                dbc.CardHeader("Progression", style={"font-size": "200%"}),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            dbc.FormGroup([
+                                dbc.Label("Country:"),
+                                dcc.Dropdown(id="select_countries", options=dropdown,
+                                             value=["Taiwan", "France"],
+                                             placeholder="Select Countries", multi=True,
+                                             className="my-2"),
+                            ]),
+                            dbc.FormGroup([
+                                dbc.Label("Y-Axis Scale:"),
+                                dbc.Checklist(
+                                    options=[{
+                                        "label": "log", "value": "true"
+                                    }],
+                                    value="true",
+                                    id="switch",
+                                    switch=True)
+                            ]),
+                        ], className="col-3"),
+                        dbc.Col([
+                            dbc.Tabs([
+                                dbc.Tab([
+                                    dcc.Graph(id="plot_countries_infection_rate", config=config,
+                                              style={'height': '50vh'}, className="ml-2 my-2")
+                                ], label="Since 22 January 2020"),
+                                dbc.Tab([
+                                    dcc.Graph(id="plot_country_confirmed_100_plus", config=config,
+                                              style={'height': '50vh'}, className="ml-2 my-2")
+                                ], label="Since 100+ Confirmed Cases"),
+                            ])
+                        ], className="col-9", ),
+                    ], className="m-2", style={"font-size": "140%"}),
+                ])
+            ], color="light")
+        ]),
+    ], className="mb-5 mx-5")
+], id="country_view2", fluid=True, )
 
 declaim_author = dbc.Container(
     [
@@ -105,6 +151,7 @@ declaim_author = dbc.Container(
 
 appTest.layout = html.Div([
     title_info,
+    # country_evolution2,
     country_evolution,
     declaim_author
 ])
@@ -114,13 +161,20 @@ appTest.layout = html.Div([
     Output(component_id='plot_countries_infection_rate', component_property='figure'),
     [Input(component_id='select_countries', component_property='value'),
      Input("plot_countries_infection_rate", "clickData")])
-def plot_countries_with_infection_rate(input_value, click_data):
+def plot_countries_infection_rate(input_value, click_data):
     if click_data is None:
         return wh.select_countries(input_value)
     else:
         curve0 = click_data["points"][0]
         date = curve0["x"]
         return wh.select_countries(input_value, date)
+
+
+@appTest.callback(
+    Output(component_id='plot_country_confirmed_100_plus', component_property='figure'),
+    [Input(component_id='select_countries', component_property='value')])
+def plot_country_confirmed_100_plus(input_value):
+    return wh.select_countries_100_plus(input_value)
 
 
 if __name__ == '__main__':
