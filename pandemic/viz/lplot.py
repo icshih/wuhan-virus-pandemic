@@ -19,14 +19,14 @@ def plot_country_state(country, date, cases, province=""):
                       height=600,
                       margin=dict(l=20, r=20, t=50, b=20),
                       plot_bgcolor="WhiteSmoke",
-                      paper_bgcolor="LightSteelBlue",)
+                      paper_bgcolor="LightSteelBlue", )
     return fig
 
 
 def plot_countries(country_list, date, cases):
     fig = go.Figure()
     for c in country_list:
-        key = "/"+c
+        key = "/" + c
         try:
             cases_in_country = cases[key]
             fig.add_trace(go.Scatter(x=date, y=cases_in_country, marker=dict(symbol="circle"), name=c))
@@ -39,7 +39,7 @@ def plot_countries(country_list, date, cases):
                       height=600,
                       margin=dict(l=20, r=20, t=50, b=20),
                       plot_bgcolor="WhiteSmoke",
-                      paper_bgcolor="LightSteelBlue",)
+                      paper_bgcolor="LightSteelBlue", )
     return fig
 
 
@@ -69,7 +69,7 @@ def plot2_countries(country_data_list):
                       height=600,
                       margin=dict(l=20, r=20, t=50, b=20),
                       plot_bgcolor="WhiteSmoke",
-                      paper_bgcolor="LightSteelBlue",)
+                      paper_bgcolor="LightSteelBlue", )
 
 
 def plot_figure_country_region(df):
@@ -94,10 +94,43 @@ def plot_figure_country_region(df):
                      type="log", autorange=True, range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
                      ticks="inside", tickson="labels")
     fig.update_layout(
-                      showlegend=True, legend=dict(font=dict(size=14)),
-                      margin=dict(l=20, r=20, t=50, b=50),
-                      plot_bgcolor="white",
-                      paper_bgcolor="white", )
+        showlegend=True, legend=dict(font=dict(size=14)),
+        margin=dict(l=20, r=20, t=50, b=50),
+        plot_bgcolor="white",
+        paper_bgcolor="white", )
+    return fig
+
+
+def plot_figure_confirmed_100_plus(df):
+    """
+    Used by Tools
+    Plot the evolution of confirmed cases after the days with more than 100 cases.
+    :param df: The DataFrome with countries as columns.
+    :return:
+    """
+    rangeUpper = 5.0
+    max_scale = np.log10(df.iloc[-1, ].max())
+    if max_scale > rangeUpper:
+        rangeUpper = max_scale
+    fig = go.Figure()
+    for c in df.columns:
+        cty = df[c]
+        hundred = cty[cty > 100]
+        days = np.arange(len(hundred))
+        fig.add_trace(go.Scatter(x=days, y=hundred, name=c,
+                                 line=dict(width=4), hovertemplate="Days: %{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
+    fig.update_traces(mode='lines', line=dict(shape="spline", smoothing=0.5))
+    fig.update_xaxes(title=dict(text="Days After 100+ Cases", font=dict(size=16)),
+                     autorange=False, range=[0, 100],
+                     ticks="inside")
+    fig.update_yaxes(visible=True, title=dict(text="Number of Confirmed Cases", font=dict(size=16)),
+                     type="log", autorange=True, range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
+                     ticks="inside", tickson="labels")
+    fig.update_layout(
+        showlegend=True, legend=dict(font=dict(size=14)),
+        margin=dict(l=20, r=20, t=50, b=50),
+        plot_bgcolor="white",
+        paper_bgcolor="white", )
     return fig
 
 
@@ -107,9 +140,11 @@ def plot_confirmed_death_recovered_by(df):
     if max_scale > rangeUpper:
         rangeUpper = max_scale
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df.index, y=df["Confirmed"], name="Confirmed", line=dict(width=4), fill="tonexty", mode="none"))
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["Confirmed"], name="Confirmed", line=dict(width=4), fill="tonexty", mode="none"))
     fig.add_trace(go.Scatter(x=df.index, y=df["Death"], name="Deaths", line=dict(width=4), fill="tozeroy", mode="none"))
-    fig.add_trace(go.Scatter(x=df.index, y=df["Recovered"], name="Recovered", line=dict(width=4), fill="tozeroy", mode="none"))
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["Recovered"], name="Recovered", line=dict(width=4), fill="tozeroy", mode="none"))
     fig.update_xaxes(title=dict(text="Date", font=dict(size=16)),
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
                      ticks="inside")
@@ -117,10 +152,10 @@ def plot_confirmed_death_recovered_by(df):
                      type="log", range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
                      ticks="inside", tickson="labels")
     fig.update_layout(
-                      showlegend=True, legend=dict(font=dict(size=14)),
-                      margin=dict(l=20, r=20, t=50, b=50),
-                      plot_bgcolor="white",
-                      paper_bgcolor="white", )
+        showlegend=True, legend=dict(font=dict(size=14)),
+        margin=dict(l=20, r=20, t=50, b=50),
+        plot_bgcolor="white",
+        paper_bgcolor="white", )
     return fig
 
 
@@ -158,10 +193,10 @@ def plot_confirmed_infection_rate(df, date=None, period=7):
         infect_rate = "20% new cases in <i>" + str(round(0.2 / popt[1])) + "</i> days*"
         # Create predicted data
         cf_pred = confirmed[x_date[0]:confirmed.index[-1]]
-        y_pred_model = 10**func(range(len(cf_pred)), *popt)
+        y_pred_model = 10 ** func(range(len(cf_pred)), *popt)
         cf_model = pd.Series(y_pred_model, index=cf_pred.index)
         # On_Date
-        on_date = cf_model.iloc[0:period+1]
+        on_date = cf_model.iloc[0:period + 1]
         # Off_Date
         off_date = cf_model.iloc[period:]
         fig.add_trace(
@@ -180,10 +215,10 @@ def plot_confirmed_infection_rate(df, date=None, period=7):
                      type="log", range=[0.0, rangeUpper], showgrid=True, gridcolor="#eee",
                      ticks="inside", tickson="labels")
     fig.update_layout(
-                      showlegend=True, legend=dict(font=dict(size=14)),
-                      margin=dict(l=20, r=20, t=50, b=50),
-                      plot_bgcolor="white",
-                      paper_bgcolor="white", )
+        showlegend=True, legend=dict(font=dict(size=14)),
+        margin=dict(l=20, r=20, t=50, b=50),
+        plot_bgcolor="white",
+        paper_bgcolor="white", )
     return fig
 
 
@@ -196,9 +231,9 @@ def plot_figure_country_case_daily(df):
         fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[df.index[0], df.index[-1]])
         fig.update_yaxes(title=dict(text="Number of New Cases"))
         fig.update_layout(width=1000, height=600,
-                      margin=dict(l=20, r=20, t=50, b=20),
-                      plot_bgcolor="white",
-                      paper_bgcolor="white", )
+                          margin=dict(l=20, r=20, t=50, b=20),
+                          plot_bgcolor="white",
+                          paper_bgcolor="white", )
     return fig
 
 
@@ -209,9 +244,9 @@ def plot_figure_of(df, province):
     fig.update_xaxes(title=dict(text="Date"), type="date", autorange=False, range=[df.index[0], df.index[-1]])
     fig.update_yaxes(title=dict(text="Number of Confirmed Cases"), type="log", range=[0, 5])
     fig.update_layout(width=1000, height=600,
-            margin=dict(l=20, r=20, t=50, b=20),
-            plot_bgcolor="WhiteSmoke",
-            paper_bgcolor="LightSteelBlue",)
+                      margin=dict(l=20, r=20, t=50, b=20),
+                      plot_bgcolor="WhiteSmoke",
+                      paper_bgcolor="LightSteelBlue", )
     return fig
 
 
@@ -226,5 +261,5 @@ def plot_all_figures(df):
                       height=600,
                       margin=dict(l=20, r=20, t=50, b=20),
                       plot_bgcolor="WhiteSmoke",
-                      paper_bgcolor="LightSteelBlue",)
+                      paper_bgcolor="LightSteelBlue", )
     return fig

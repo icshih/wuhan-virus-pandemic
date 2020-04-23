@@ -1,5 +1,6 @@
 from pandemic.data.WuhanVirus import CSSETimeSeries as cts
-from pandemic.viz.lplot import plot_confirmed_death_recovered_by, plot_confirmed_infection_rate
+from pandemic.viz.lplot import plot_confirmed_death_recovered_by, plot_confirmed_infection_rate, \
+    plot_figure_confirmed_100_plus, plot_figure_country_region
 import pandas as pd
 
 
@@ -18,7 +19,11 @@ class Tools:
         return confirmed, death, recovered
 
     def _show_confirmed_only(self, country_list):
-        return self.confirmed.get_figure_country_region(country_list)
+        return plot_figure_country_region(self.confirmed.df[country_list])
+        # return self.confirmed.get_figure_country_region(country_list)
+
+    def _show_confirmed_100_plus(self, country_list):
+        return plot_figure_confirmed_100_plus(self.confirmed.df[country_list])
 
     def _show_confirmed_death_recovered(self, country):
         df = pd.concat([self.confirmed.df[country], self.death.df[country], self.recovered.df[country]], axis=1)
@@ -60,6 +65,14 @@ class Tools:
             return self._show_confirmed_death_recovered_infection_rate(country_list[0], date=date)
         else:
             return self._show_confirmed_only(country_list)
+
+    def select_countries_100_plus(self, country_list):
+        """
+        Display COVID-19 epidemics in the selected country since the confirmed cases exceed 100.
+        :param country_list: One or more countries.
+        :return:
+        """
+        return self._show_confirmed_100_plus(country_list)
 
     def reload(self):
         """
