@@ -14,13 +14,13 @@ global_confirmed = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/ma
 global_deaths = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_deaths_global.csv"
 global_recovered = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_recovered_global.csv"
 
-wh = Tools(global_confirmed, global_deaths, global_recovered)
-dropdown = wh.create_country_dropdown()
-
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.COSMO])
 app.config.suppress_callback_exceptions = True
 app.title = "COVID-19 Pandemic"
 server = app.server
+
+wh = Tools(global_confirmed, global_deaths, global_recovered)
+dropdown = wh.create_country_dropdown()
 
 config = {'modeBarButtonsToRemove': ['hoverClosestCartesian',
                                      'zoom2d', 'hoverCompareCartesian', 'zoomInGeo', 'zoomOutGeo',
