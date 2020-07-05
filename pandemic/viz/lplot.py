@@ -109,19 +109,22 @@ def plot_figure_confirmed_100_plus(df):
     :return:
     """
     range_upper = 5.0
-    max_scale = np.log10(df.iloc[-1, ].max())
+    max_scale = np.log10(df.iloc[-1,].max())
     if max_scale > range_upper:
         range_upper = max_scale
     fig = go.Figure()
+    longest_day = 0
     for c in df.columns:
         cty = df[c]
         hundred = cty[cty > 100]
         days = np.arange(len(hundred))
+        if len(days) > longest_day:
+            longest_day = len(days)
         fig.add_trace(go.Scatter(x=days, y=hundred, name=c,
                                  line=dict(width=4), hovertemplate="Days: %{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
     fig.update_traces(mode='lines', line=dict(shape="spline", smoothing=0.5))
     fig.update_xaxes(title=dict(text="Days After 100+ Cases", font=dict(size=16)),
-                     autorange=False, range=[0, 100],
+                     autorange=False, range=[0, longest_day],
                      ticks="inside")
     fig.update_yaxes(visible=True, title=dict(text="Number of Confirmed Cases", font=dict(size=16)),
                      type="log", autorange=True, range=[0.0, range_upper], showgrid=True, gridcolor="#eee",
@@ -176,21 +179,20 @@ def plot_confirmed_infection_rate(df, date=None, period=7):
 
     fig.add_trace(
         go.Scatter(x=df.index, y=df["Confirmed"], name="Confirmed",
-                   line=dict(width=4), fill="tonexty", mode="none",
-                   hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
-    fig.add_trace(
-        go.Scatter(x=df.index, y=df["Death"], name="Deaths",
-                   line=dict(width=4), fill="tozeroy", mode="none",
+                   line=dict(width=4), fill="tonexty", fillcolor="#DCDCDC", mode="none",
                    hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
     fig.add_trace(
         go.Scatter(x=df.index, y=df["Recovered"], name="Recovered",
-                   line=dict(width=4), fill="tozeroy", mode="none",
+                   line=dict(width=4), fill="tonexty", fillcolor="#C0C0C0", mode="none",
+                   hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["Death"], name="Deaths",
+                   line=dict(width=4), fill="tozeroy", fillcolor="#808080", mode="none",
                    hovertemplate="%{x}<br>Cases: %{y:d}", hoverinfo="x+text"))
 
     if date is not None:
         confirmed = df["Confirmed"]
         x_date, popt, pcov = fit(confirmed, date, period)
-        infect_rate = "20% new cases in <i>" + str(round(0.2 / popt[1])) + "</i> days*"
         # Create predicted data
         cf_pred = confirmed[x_date[0]:confirmed.index[-1]]
         y_pred_model = 10 ** func(range(len(cf_pred)), *popt)
@@ -199,14 +201,20 @@ def plot_confirmed_infection_rate(df, date=None, period=7):
         on_date = cf_model.iloc[0:period + 1]
         # Off_Date
         off_date = cf_model.iloc[period:]
+
+        if popt[1] > 0.0:
+            infect_rate = "20% new cases in <i>" + str(round(0.2 / popt[1])) + "</i> days*"
+            fig.add_trace(
+                go.Scatter(x=off_date.index, y=off_date, mode='lines', name="Projected",
+                           line=dict(color='Black', width=4, dash='dot'),
+                           showlegend=False, hovertemplate="%{x}<br>Projected Cases: %{y:.0f}", hoverinfo="x+text"))
+        else:
+            infect_rate = "No new cases"
+
         fig.add_trace(
             go.Scatter(x=on_date.index, y=on_date, mode='lines', name="Fitted",
-                       line=dict(color='firebrick', width=4),
+                       line=dict(color='Black', width=4),
                        showlegend=False, hovertemplate="%{x}<br>" + infect_rate, hoverinfo="x+text"))
-        fig.add_trace(
-            go.Scatter(x=off_date.index, y=off_date, mode='lines', name="Projected",
-                       line=dict(color='firebrick', width=4, dash='dot'),
-                       showlegend=False, hovertemplate="%{x}<br>Projected Cases: %{y:.0f}", hoverinfo="x+text"))
 
     fig.update_xaxes(title=dict(text="Date", font=dict(size=16)),
                      type="date", autorange=False, range=[df.index[0], df.index[-1]],
